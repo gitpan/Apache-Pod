@@ -1,4 +1,4 @@
-# $Id: 01.version.t,v 1.3 2003/09/10 03:19:07 andy Exp $
+#!perl -T
 
 use Test::More tests=>5;
 use strict;

@@ -1,13 +1,27 @@
-# $Id: Changes,v 1.3 2003/09/10 03:32:07 andy Exp $
+# $Id: Changes,v 1.7 2004/05/10 20:51:44 andy Exp $
 Revision history for Perl extension Apache::Pod
 
-0.03	September 9, 2003
-	* Added stylesheet handling, including replicating the
-	  search.cpan.org stylesheet as a default.  Thanks very much to
-	  Grant McLean for the patch.
+0.10    May 10, 2004
+        [FEATURES]
+        * Pod links link to the filename.  Thereform, L<foo.pod> links
+        to foo.pod, instead of "TODO".  This is only until Sean does
+        his magic in Pod::Simple::HTML so this fudgery isn't needed.
 
-0.02	September 29, 2002
-	* Seems to find modules correctly, a la perldoc.
-	
-0.01	September 26, 2002	
-	* First version
+        [FIXES]
+        * Handlers now properly return OK.
+
+        [INTERNALS]
+        * Now overriding Pod::Simple::HTML.
+        * Added pod.t and pod-coverage.t
+        * Changed the handling of the CSS as a __DATA__ section.
+
+0.03    September 9, 2003
+        * Added stylesheet handling, including replicating the
+          search.cpan.org stylesheet as a default.  Thanks very much to
+          Grant McLean for the patch.
+
+0.02    September 29, 2002
+        * Seems to find modules correctly, a la perldoc.
+
+0.01    September 26, 2002
+        * First version

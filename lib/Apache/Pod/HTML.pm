@@ -8,14 +8,17 @@ Apache::Pod::HTML - base class for converting Pod files to prettier forms
 
 Version 0.03
 
-$Header: /home/cvs/apache-pod/lib/Apache/Pod/HTML.pm,v 1.6 2003/09/10 03:21:53 andy Exp $
+$Header: /home/cvs/apache-pod/lib/Apache/Pod/HTML.pm,v 1.12 2004/05/10 20:51:44 andy Exp $
 
 =cut
 
 use strict;
-use vars qw( $VERSION $AUTO_STYLESHEET );
+use vars qw( $VERSION );
 
-$VERSION = '0.03';
+$VERSION = '0.10';
+
+use Apache::Pod;
+use Apache::Constants;
 
 =head1 SYNOPSIS
 
@@ -62,21 +65,23 @@ your own custom stylesheet file.
 
 =cut
 
-use Apache::Pod;
-use Pod::Simple::HTML;
-
 sub handler {
     my $r = shift;
 
-    return auto_stylesheet($r) if $r->path_info eq '/auto.css';
-
-    $r->content_type('text/html');
+    if ( $r->path_info eq '/auto.css' ) {
+        $r->content_type( 'text/css' );
+        $r->send_http_header;
+        print _css();
+        return OK;
+    }
 
     my $body;
     my $file = Apache::Pod::getpodfile( $r );
 
     if ( $file ) {
-        my $parser = Pod::Simple::HTML->new;
+        my $parser = My::Pod::Simple::HTML->new;
+        $parser->no_errata_section(1);
+        $parser->complain_stderr(1);
         $parser->output_string( \$body );
         $parser->parse_file( $file );
         # TODO: Send the timestamp of the file in the header
@@ -84,6 +89,7 @@ sub handler {
         my $stylesheet = $r->dir_config('STYLESHEET') || '';
         $stylesheet = $r->location . '/auto.css' if $stylesheet =~ /^auto/i;
         if ( $stylesheet ) {
+            # Stick in a link to our stylesheet
             $stylesheet = qq(<LINK REL="stylesheet" HREF="$stylesheet" TYPE="text/css">);
             $body =~ s{(?=</head)}{$stylesheet\n}i;
         }
@@ -91,42 +97,19 @@ sub handler {
         $body = "<HTML><HEAD><TITLE>Not found</TITLE></HEAD><BODY>That module doesn't exist</BODY></HTML>";
     }
 
+    $r->content_type('text/html');
     $r->send_http_header;
     print $body;
+
+    return OK;
 }
 
-sub auto_stylesheet {
-    my $r = shift;
-
-    unless ($AUTO_STYLESHEET) {
-        local $/ = undef;
-        $AUTO_STYLESHEET = <DATA>;
-    }
-
-    $r->content_type('text/css');
-    $r->send_http_header;
-    print $AUTO_STYLESHEET;
-    return;
-}
-
-1;
-
-=head1 AUTHOR
-
-Andy Lester C<< <andy@petdance.com> >>, adapted from Apache::Perldoc by
-Rich Bowen C<< <rbowen@ApacheAdmin.com> >>
-
-=head1 LICENSE
-
-This package is licensed under the same terms as Perl itself.
-
-=cut
-
-__DATA__
+sub _css {
+    return <<'EOF';
 BODY {
     background: white;
     color: black;
-    font-family: arial,sans-serif;
+    font-family: times,serif;
     margin: 0;
     padding: 1ex;
 }
@@ -155,13 +138,15 @@ PRE {
 H1 {
     background: transparent;
     color: #006699;
-    font-size: large;
+    font-size: x-large;
+    font-family: tahoma,sans-serif;
 }
 
 H2 {
     background: transparent;
     color: #006699;
-    font-size: medium;
+    font-size: large;
+    font-family: tahoma,sans-serif;
 }
 
 .block {
@@ -178,3 +163,36 @@ TD .block {
 HR {
     display: none;
 }
+EOF
+}
+
+package My::Pod::Simple::HTML;
+
+use Pod::Simple::HTML;
+
+our @ISA = qw( Pod::Simple::HTML );
+
+*VERSION = *Pod::Simple::HTML::VERSION;
+
+sub resolve_pod_page_link {
+    my $self = shift;
+    my $to = shift;
+    my $section = shift;
+
+    my $link = $to;
+
+    return $link;
+}
+
+=head1 AUTHOR
+
+Andy Lester C<< <andy@petdance.com> >>, adapted from Apache::Perldoc by
+Rich Bowen C<< <rbowen@ApacheAdmin.com> >>
+
+=head1 LICENSE
+
+This package is licensed under the same terms as Perl itself.
+
+=cut
+
+1;

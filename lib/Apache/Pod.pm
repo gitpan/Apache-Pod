@@ -8,14 +8,14 @@ Apache::Pod - base class for converting Pod files to prettier forms
 
 Version 0.03
 
-    $Header: /home/cvs/apache-pod/lib/Apache/Pod.pm,v 1.6 2003/09/10 03:21:18 andy Exp $
+    $Header: /home/cvs/apache-pod/lib/Apache/Pod.pm,v 1.8 2004/05/10 20:51:44 andy Exp $
 
 =cut
 
 use vars qw( $VERSION );
 use strict;
 
-$VERSION = '0.03';
+$VERSION = '0.10';
 
 =head1 SYNOPSIS
 
@@ -38,7 +38,7 @@ he'd like from the URL, such as
 No functions are exported.  I don't want to dink around with Exporter
 in mod_perl if I don't need to.
 
-=head2 C<< getpodfile( I<$r> ) >>
+=head2 getpodfile( I<$r> )
 
 Returns the filename requested off of the C<$r> request object, or what
 Perldoc would find, based on Pod::Find.
@@ -60,10 +60,10 @@ sub getpodfile {
         $module =~ s|/|::|g;
         $module =~ s|\.html?$||;  # Intermodule links end with .html
 
-	$filename = Pod::Find::pod_where( {-inc=>1}, $module );
+        $filename = Pod::Find::pod_where( {-inc=>1}, $module );
 
-	# XXX Unimplemented
-	# $pod =~ s/^f::/-f /;    # If we specify /f/ as our "base", it's a function search
+        # XXX Unimplemented
+        # $pod =~ s/^f::/-f /;    # If we specify /f/ as our "base", it's a function search
     }
 
     return $filename;

@@ -8,14 +8,14 @@ Apache::Pod::Text - mod_perl handler to convert Pod to plain text
 
 Version 0.03
 
-    $Header: /home/cvs/apache-pod/lib/Apache/Pod/Text.pm,v 1.5 2003/09/10 03:21:17 andy Exp $
+    $Header: /home/cvs/apache-pod/lib/Apache/Pod/Text.pm,v 1.7 2004/05/10 20:51:44 andy Exp $
 
 =cut
 
 use strict;
 use vars qw( $VERSION );
 
-$VERSION = '0.03';
+$VERSION = '0.10';
 
 =head1 SYNOPSIS
 
@@ -28,12 +28,11 @@ See L<Apache::Pod::HTML> for configuration details.
 =cut
 
 use Apache::Pod;
+use Apache::Constants;
 use Pod::Simple::Text;
 
 sub handler {
     my $r = shift;
-    $r->content_type('text/plain');
-    $r->send_http_header;
 
     my $str;
     my $file = Apache::Pod::getpod( $r );
@@ -43,18 +42,22 @@ sub handler {
     $parser->output_string( \$str );
     $parser->parse_file( $file );
 
+    $r->content_type('text/plain');
+    $r->send_http_header;
     print $str;
-}
 
-1;
+    return OK;
+}
 
 =head1 AUTHOR
 
-Andy Lester <andy@petdance.com>, adapted from Apache::Perldoc by
-Rich Bowen <rbowen@ApacheAdmin.com>
+Andy Lester C<< <andy@petdance.com> >>, adapted from Apache::Perldoc by
+Rich Bowen C<< <rbowen@ApacheAdmin.com> >>
 
 =head1 LICENSE
 
 This package is licensed under the same terms as Perl itself.
 
 =cut
+
+1;
