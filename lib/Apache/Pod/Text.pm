@@ -6,17 +6,16 @@ Apache::Pod::Text - mod_perl handler to convert Pod to plain text
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
-    $Header: /home/cvs/apache-pod/lib/Apache/Pod/Text.pm,v 1.3 2002/09/30 04:42:05 andy Exp $
+    $Header: /home/cvs/apache-pod/lib/Apache/Pod/Text.pm,v 1.5 2003/09/10 03:21:17 andy Exp $
 
 =cut
 
 use strict;
-eval 'use warnings' if $] >= 5.006;
 use vars qw( $VERSION );
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 =head1 SYNOPSIS
 

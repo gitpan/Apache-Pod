@@ -6,17 +6,16 @@ Apache::Pod - base class for converting Pod files to prettier forms
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
-    $Header: /home/cvs/apache-pod/lib/Apache/Pod.pm,v 1.5 2002/09/30 04:42:05 andy Exp $
+    $Header: /home/cvs/apache-pod/lib/Apache/Pod.pm,v 1.6 2003/09/10 03:21:18 andy Exp $
 
 =cut
 
 use vars qw( $VERSION );
 use strict;
-eval 'use warnings' if $] >= 5.006;
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 =head1 SYNOPSIS
 

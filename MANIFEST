@@ -8,3 +8,4 @@ lib/Apache/Pod/Text.pm
 t/00.load.t
 t/01.version.t
 t/02.pod.t
+META.yml                                Module meta-data (added by MakeMaker)
