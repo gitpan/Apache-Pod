@@ -1,0 +1,10 @@
+Changes
+MANIFEST
+Makefile.PL
+README
+lib/Apache/Pod.pm
+lib/Apache/Pod/HTML.pm
+lib/Apache/Pod/Text.pm
+t/00.load.t
+t/01.version.t
+t/02.pod.t
