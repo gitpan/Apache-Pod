@@ -6,15 +6,17 @@ Apache::Pod::HTML - base class for converting Pod files to prettier forms
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
-    $Header: /home/cvs/apache-pod/lib/Apache/Pod/HTML.pm,v 1.4 2002/09/28 17:20:50 andy Exp $
+    $Header: /home/cvs/apache-pod/lib/Apache/Pod/HTML.pm,v 1.5 2002/09/30 04:42:05 andy Exp $
 
 =cut
 
+use strict;
+eval 'use warnings' if $] >= 5.006;
 use vars qw( $VERSION );
 
-$VERSION = '0.01_01';
+$VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -62,17 +64,22 @@ use Pod::Simple::HTML;
 sub handler {
     my $r = shift;
     $r->content_type('text/html');
+
+    my $body;
+    my $file = Apache::Pod::getpodfile( $r );
+    warn "Got back [$file]";
+
+    if ( $file ) {
+	my $parser = Pod::Simple::HTML->new;
+	$parser->output_string( \$body );
+	$parser->parse_file( $file );
+	# XXX Send the timestamp of the file in the header
+    } else {
+	$body = "<HTML><BODY>That module doesn't exist</BODY></HTML>";
+    }
+
     $r->send_http_header;
-
-    my $str;
-    my $file = Apache::Pod::getpod( $r );
-
-    my $parser = Pod::Simple::HTML->new;
-    $parser->complain_stderr(1);
-    $parser->output_string( \$str );
-    $parser->parse_file( $file );
-
-    print $str;
+    print $body;
 }
 
 1;
