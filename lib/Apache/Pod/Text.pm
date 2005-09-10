@@ -6,16 +6,14 @@ Apache::Pod::Text - mod_perl handler to convert Pod to plain text
 
 =head1 VERSION
 
-Version 0.03
-
-    $Header: /home/cvs/apache-pod/lib/Apache/Pod/Text.pm,v 1.7 2004/05/10 20:51:44 andy Exp $
+Version 0.20
 
 =cut
 
 use strict;
 use vars qw( $VERSION );
 
-$VERSION = '0.10';
+$VERSION = '0.20';
 
 =head1 SYNOPSIS
 
@@ -44,7 +42,7 @@ sub handler {
 
     $r->content_type('text/plain');
     $r->send_http_header;
-    print $str;
+    $r->print( $str );
 
     return OK;
 }

@@ -6,16 +6,14 @@ Apache::Pod - base class for converting Pod files to prettier forms
 
 =head1 VERSION
 
-Version 0.03
-
-    $Header: /home/cvs/apache-pod/lib/Apache/Pod.pm,v 1.8 2004/05/10 20:51:44 andy Exp $
+Version 0.20
 
 =cut
 
 use vars qw( $VERSION );
 use strict;
 
-$VERSION = '0.10';
+$VERSION = '0.20';
 
 =head1 SYNOPSIS
 
@@ -73,8 +71,16 @@ sub getpodfile {
 
 =head1 AUTHOR
 
-Andy Lester <andy@petdance.com>, adapted from Apache::Perldoc by
-Rich Bowen <rbowen@ApacheAdmin.com>
+Andy Lester <andy at petdance.com>
+
+=head1 ACKNOWLEDGEMENTS
+
+Adapted from Apache::Perldoc by Rich Bowen.  Thanks also to
+Pete Krawczyk,
+Kjetil Skotheim
+and
+Kate Yoak
+for contributions.
 
 =head1 LICENSE
 

@@ -4,18 +4,18 @@ package Apache::Pod::HTML;
 
 Apache::Pod::HTML - base class for converting Pod files to prettier forms
 
-=head1 VERSION
-
-Version 0.03
-
-$Header: /home/cvs/apache-pod/lib/Apache/Pod/HTML.pm,v 1.12 2004/05/10 20:51:44 andy Exp $
-
 =cut
 
 use strict;
 use vars qw( $VERSION );
 
-$VERSION = '0.10';
+$VERSION = '0.20';
+
+=head1 VERSION
+
+Version 0.20
+
+=cut
 
 use Apache::Pod;
 use Apache::Constants;
@@ -59,9 +59,47 @@ Finally, you can search for a particular Perl keyword with
 C<http://your.server.com/perldoc/f/keyword> The 'f' is used by analogy
 with the C<-f> flag to C<perldoc>.
 
-Specifying 'auto' for the stylesheet will cause the built-in CSS stylesheet
-to be used.  If you prefer, you can replace the word 'auto' with the URL of
-your own custom stylesheet file.
+=head1 CONFIGURATION VARIABLES
+
+=head2 STYLESHEET
+
+Specifies the stylesheet to use with the output HTML file.
+
+    <Location /perldoc>
+        SetHandler  perl-script
+        PerlHandler Apache::Pod::HTML
+        PerlSetVar  STYLESHEET auto
+    </Location>
+
+Specifying 'auto' for the stylesheet will cause the built-in CSS
+stylesheet to be used.  If you prefer, you can replace the word 'auto'
+with the URL of your own custom stylesheet file.
+
+=head2 INDEX
+
+When INDEX is true, a table of contents is added at the top of the
+HTML document.
+
+    <Files *.pod>
+        SetHandler perl-script
+        PerlHandler Apache::Pod::HTML
+        PerlSetVar INDEX 1
+    </Files>
+
+By default, this is off.
+
+=head2 GZIP
+
+When GZIP is true, the whole HTTP body is compressed.  The user's browser must 
+accept gzip, and L<Compress::Zlib> must be available.  Otherwise, GZIP is ignored.
+
+    <Files *.pod>
+        SetHandler perl-script
+        PerlHandler Apache::Pod::HTML
+        PerlSetVar GZIP 1
+    </Files>
+
+By default, this is off.
 
 =cut
 
@@ -71,7 +109,7 @@ sub handler {
     if ( $r->path_info eq '/auto.css' ) {
         $r->content_type( 'text/css' );
         $r->send_http_header;
-        print _css();
+        $r->print( _css() );
         return OK;
     }
 
@@ -79,10 +117,11 @@ sub handler {
     my $file = Apache::Pod::getpodfile( $r );
 
     if ( $file ) {
-        my $parser = My::Pod::Simple::HTML->new;
+        my $parser = Pod::Simple::HTML->new;
         $parser->no_errata_section(1);
         $parser->complain_stderr(1);
         $parser->output_string( \$body );
+        $parser->index( $r->dir_config('INDEX') );
         $parser->parse_file( $file );
         # TODO: Send the timestamp of the file in the header
 
@@ -93,13 +132,21 @@ sub handler {
             $stylesheet = qq(<LINK REL="stylesheet" HREF="$stylesheet" TYPE="text/css">);
             $body =~ s{(?=</head)}{$stylesheet\n}i;
         }
+        if ( $r->dir_config('GZIP') && ($r->header_in('Accept-Encoding') =~ /gzip/) ) {
+            local $@;
+            eval {
+                require Compress::Zlib;
+                $body = Compress::Zlib::memGzip( $body );
+                $r->header_out('Content-Encoding','gzip');
+            };
+        }
     } else {
         $body = "<HTML><HEAD><TITLE>Not found</TITLE></HEAD><BODY>That module doesn't exist</BODY></HTML>";
     }
 
     $r->content_type('text/html');
     $r->send_http_header;
-    print $body;
+    $r->print( $body );
 
     return OK;
 }

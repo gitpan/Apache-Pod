@@ -1,5 +1,13 @@
-# $Id: Changes,v 1.7 2004/05/10 20:51:44 andy Exp $
-Revision history for Perl extension Apache::Pod
+Revision history for Apache::Pod
+
+0.20    Sat Sep 10 13:57:11 CDT 2005
+        [FEATURES]
+        * Added INDEX and GZIP options.  Thanks to Kjetil Skotheim.
+
+        [FIXES]
+        * Uses C<< $r->print >> instead of bare C<print> to generate
+          output.  This is more portable.  Thanks to Kate Yoak.
+        * Added a dependency on Apache::Constants.
 
 0.10    May 10, 2004
         [FEATURES]

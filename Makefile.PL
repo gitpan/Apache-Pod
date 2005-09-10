@@ -1,4 +1,3 @@
-# $Id: Makefile.PL,v 1.5 2004/05/10 20:51:44 andy Exp $
 use strict;
 use ExtUtils::MakeMaker;
 
@@ -10,16 +9,17 @@ use ExtUtils::MakeMaker;
     PMLIBDIRS       => [qw(lib/)],
     AUTHOR          => 'Andy Lester <andy@petdance.com>',
     PREREQ_PM       => {
-                        'File::Find'        => 0,
-                        'File::Spec'        => 0,
-                        'Pod::Find'         => 0,
-                        'Pod::Simple'       => '2.06',
-                        'Pod::Simple::HTML' => 0,
-                        'Pod::Simple::Text' => 0,
-                        'Test::More'        => 0,
+        'Apache::Constants' => 0,
+        'File::Find'        => 0,
+        'File::Spec'        => 0,
+        'Pod::Find'         => '1.3',
+        'Pod::Simple'       => '3.01',
+        'Pod::Simple::HTML' => 0,
+        'Pod::Simple::Text' => 0,
+        'Test::More'        => 0,
     },
     dist => {
-        COMPRESS => 'gzip -9f', 
+        COMPRESS => 'gzip -9f',
         SUFFIX => 'gz',
     },
 );
