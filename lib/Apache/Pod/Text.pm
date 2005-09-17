@@ -6,14 +6,14 @@ Apache::Pod::Text - mod_perl handler to convert Pod to plain text
 
 =head1 VERSION
 
-Version 0.20
+Version 0.22
 
 =cut
 
 use strict;
 use vars qw( $VERSION );
 
-$VERSION = '0.20';
+$VERSION = '0.22';
 
 =head1 SYNOPSIS
 

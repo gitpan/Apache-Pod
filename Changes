@@ -1,5 +1,14 @@
 Revision history for Apache::Pod
 
+NEXT    Fri Sep 16 22:46:06 CDT 2005
+        [FEATURES]
+        * Added LINKBASE configuration variable to define base of the
+          URLs created by L<> links.  Thanks Pete Krawczyk.
+
+        [FIXES]
+        * URI-encodes the links in Apache::Pod::HTML.  Thanks to Chris
+          Eade.
+
 0.20    Sat Sep 10 13:57:11 CDT 2005
         [FEATURES]
         * Added INDEX and GZIP options.  Thanks to Kjetil Skotheim.

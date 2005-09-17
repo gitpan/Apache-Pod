@@ -9,16 +9,17 @@ Apache::Pod::HTML - base class for converting Pod files to prettier forms
 use strict;
 use vars qw( $VERSION );
 
-$VERSION = '0.20';
+$VERSION = '0.22';
 
 =head1 VERSION
 
-Version 0.20
+Version 0.22
 
 =cut
 
 use Apache::Pod;
 use Apache::Constants;
+use URI::Escape;
 
 =head1 SYNOPSIS
 
@@ -46,6 +47,7 @@ The following configuration should go in your httpd.conf
         SetHandler  perl-script
         PerlHandler Apache::Pod::HTML
         PerlSetVar  STYLESHEET auto
+        PerlSetVar  LINKBASE http://www.example.com/docs/
     </Location>
 
 You can then get documentation for a module C<Foo::Bar> at the URL
@@ -101,6 +103,13 @@ accept gzip, and L<Compress::Zlib> must be available.  Otherwise, GZIP is ignore
 
 By default, this is off.
 
+=head2 LINKBASE
+
+Specifying an optional C<LINKBASE> variable changes the external
+HTTP links to use a URL prefix of your specification instead of using
+L<Pod::Simple::HTML>'s default.  Using the magic word C<LOCAL> will make
+links local instead of external.
+
 =cut
 
 sub handler {
@@ -122,6 +131,12 @@ sub handler {
         $parser->complain_stderr(1);
         $parser->output_string( \$body );
         $parser->index( $r->dir_config('INDEX') );
+        if ( my $prefix = $r->dir_config('LINKBASE') ) {
+            if ( $prefix eq 'LOCAL' ) {
+                $prefix = $r->location . '/';
+            }
+            $parser->perldoc_url_prefix( $prefix );
+        }
         $parser->parse_file( $file );
         # TODO: Send the timestamp of the file in the header
 
@@ -228,7 +243,7 @@ sub resolve_pod_page_link {
 
     my $link = $to;
 
-    return $link;
+    return uri_escape( $link );
 }
 
 =head1 AUTHOR
